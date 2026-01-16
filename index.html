@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Jogging Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom, #eff6ff, #dbeafe);
+            min-height: 100vh;
+            overscroll-behavior: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        .container {
+            padding: 1rem;
+            max-width: 448px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .header svg {
+            width: 2rem;
+            height: 2rem;
+            color: #2563eb;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-box {
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+        
+        .stat-box.blue { background: #dbeafe; }
+        .stat-box.green { background: #d1fae5; }
+        .stat-box.purple { background: #e9d5ff; }
+        .stat-box.orange { background: #fed7aa; }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #4b5563;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .stat-box.blue .stat-value { color: #2563eb; }
+        .stat-box.green .stat-value { color: #059669; }
+        .stat-box.purple .stat-value { color: #7c3aed; }
+        .stat-box.orange .stat-value { color: #ea580c; }
+        
+        .stat-unit {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .message {
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            border: 1px solid;
+        }
+        
+        .message.hidden {
+            display: none;
+        }
+        
+        .message.error {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #991b1b;
+        }
+        
+        .message.success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #166534;
+        }
+        
+        .message.info {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1e40af;
+        }
+        
+        .message p {
+            font-size: 0.875rem;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        button {
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        button.hidden {
+            display: none;
+        }
+        
+        button svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+        
+        .btn-start {
+            flex: 1;
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-start:active {
+            background: #059669;
+        }
+        
+        .btn-stop {
+            flex: 1;
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-stop:active {
+            background: #dc2626;
+        }
+        
+        .btn-reset {
+            background: #d1d5db;
+            color: #374151;
+        }
+        
+        .btn-reset:active {
+            background: #9ca3af;
+        }
+        
+        .status {
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .status.hidden {
+            display: none;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .status-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .status-text {
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+        
+        .footer {
+            background: white;
+            border-radius: 0 0 1.5rem 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                <h1>Jogging Tracker</h1>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box blue">
+                    <p class="stat-label">Zeit</p>
+                    <p id="time" class="stat-value">00:00:00</p>
+                </div>
+                <div class="stat-box green">
+                    <p class="stat-label">Distanz</p>
+                    <p id="distance" class="stat-value">0.00 km</p>
+                </div>
+                <div class="stat-box purple">
+                    <p class="stat-label">Pace</p>
+                    <p id="pace" class="stat-value">0:00</p>
+                    <p class="stat-unit">min/km</p>
+                </div>
+                <div class="stat-box orange">
+                    <p class="stat-label">Geschwindigkeit</p>
+                    <p id="speed" class="stat-value">0.0</p>
+                    <p class="stat-unit">km/h</p>
+                </div>
+            </div>
+
+            <div id="message" class="message hidden"></div>
+
+            <div class="controls">
+                <button id="startBtn" class="btn-start">
+                    <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                    </svg>
+                    Training starten
+                </button>
+                <button id="stopBtn" class="btn-stop hidden">
+                    <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"/>
+                    </svg>
+                    Training stoppen
+                </button>
+                <button id="resetBtn" class="btn-reset hidden">
+                    Reset
+                </button>
+            </div>
+
+            <div id="status" class="status hidden">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span class="status-text">Tracking aktiv...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Freies Training • Version 1.0
+        </div>
+    </div>
+
+    <script>
+        // App State
+        let isTracking = false;
+        let time = 0;
+        let distance = 0;
+        let lastPosition = null;
+        let watchId = null;
+        let timerInterval = null;
+        let route = [];
+
+        // DOM Elemente
+        const timeEl = document.getElementById('time');
+        const distanceEl = document.getElementById('distance');
+        const paceEl = document.getElementById('pace');
+        const speedEl = document.getElementById('speed');
+        const messageEl = document.getElementById('message');
+        const statusEl = document.getElementById('status');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // Hilfsfunktionen
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function formatPace(metersPerSecond) {
+            if (metersPerSecond === 0) return '0:00';
+            const secondsPerKm = 1000 / metersPerSecond;
+            const minutes = Math.floor(secondsPerKm / 60);
+            const seconds = Math.floor(secondsPerKm % 60);
+            return `${minutes}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371000;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function showMessage(text, type = 'info') {
+            messageEl.className = `message ${type}`;
+            messageEl.innerHTML = `<p>${text}</p>`;
+            messageEl.classList.remove('hidden');
+        }
+
+        function hideMessage() {
+            messageEl.classList.add('hidden');
+        }
+
+        function updateDisplay() {
+            timeEl.textContent = formatTime(time);
+            distanceEl.textContent = `${(distance / 1000).toFixed(2)} km`;
+        }
+
+        // Tracking Funktionen
+        async function startTracking() {
+            hideMessage();
+
+            if (!navigator.geolocation) {
+                showMessage('GPS wird von deinem Browser nicht unterstützt', 'error');
+                return;
+            }
+
+            showMessage('GPS wird initialisiert...', 'info');
+
+            // Erste Position abfragen für Berechtigung
+            try {
+                await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            console.log('GPS Berechtigung erhalten');
+                            resolve(position);
+                        },
+                        (err) => {
+                            console.error('GPS Fehler:', err);
+                            let errorMsg = 'GPS-Zugriff fehlgeschlagen. ';
+                            
+                            if (err.code === 1) {
+                                errorMsg += 'Bitte erlaube den Standortzugriff wenn Safari fragt, oder aktiviere ihn in: Einstellungen → Safari → Standort → "Beim Verwenden erlauben".';
+                            } else if (err.code === 2) {
+                                errorMsg += 'Standort nicht verfügbar. Bist du draußen mit freier Sicht zum Himmel?';
+                            } else if (err.code === 3) {
+                                errorMsg += 'Zeitüberschreitung beim GPS-Zugriff. Versuche es nochmal.';
+                            }
+                            
+                            reject(new Error(errorMsg));
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 15000,
+                            maximumAge: 0
+                        }
+                    );
+                });
+            } catch (err) {
+                showMessage(err.message, 'error');
+                return;
+            }
+
+            // Starte Tracking
+            watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const { latitude, longitude, speed } = position.coords;
+                    
+                    hideMessage();
+                    
+                    route.push({ latitude, longitude, timestamp: Date.now() });
+
+                    if (lastPosition) {
+                        const distanceAdded = calculateDistance(
+                            lastPosition.latitude,
+                            lastPosition.longitude,
+                            latitude,
+                            longitude
+                        );
+                        
+                        if (distanceAdded > 2 && distanceAdded < 100) {
+                            distance += distanceAdded;
+                            updateDisplay();
+                        }
+                    }
+
+                    lastPosition = { latitude, longitude };
+
+                    if (speed && speed > 0) {
+                        const kmh = speed * 3.6;
+                        speedEl.textContent = kmh.toFixed(1);
+                        paceEl.textContent = formatPace(speed);
+                    }
+                },
+                (err) => {
+                    console.error('Watch Position Fehler:', err);
+                    showMessage('GPS-Signal verloren. Versuche freie Sicht zum Himmel zu haben.', 'error');
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 15000
+                }
+            );
+
+            // Starte Timer
+            timerInterval = setInterval(() => {
+                time++;
+                updateDisplay();
+            }, 1000);
+
+            isTracking = true;
+            startBtn.classList.add('hidden');
+            stopBtn.classList.remove('hidden');
+            statusEl.classList.remove('hidden');
+            showMessage('GPS aktiv! Gehe raus und starte dein Training.', 'success');
+        }
+
+        function stopTracking() {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+            }
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            isTracking = false;
+            startBtn.classList.remove('hidden');
+            stopBtn.classList.add('hidden');
+            statusEl.classList.add('hidden');
+            
+            if (time > 0 || distance > 0) {
+                resetBtn.classList.remove('hidden');
+            }
+            
+            showMessage('Training beendet!', 'success');
+        }
+
+        function resetTracking() {
+            time = 0;
+            distance = 0;
+            lastPosition = null;
+            route = [];
+            
+            timeEl.textContent = '00:00:00';
+            distanceEl.textContent = '0.00 km';
+            paceEl.textContent = '0:00';
+            speedEl.textContent = '0.0';
+            
+            resetBtn.classList.add('hidden');
+            hideMessage();
+        }
+
+        // Event Listeners
+        startBtn.addEventListener('click', startTracking);
+        stopBtn.addEventListener('click', stopTracking);
+        resetBtn.addEventListener('click', resetTracking);
+
+        // Initiale Nachricht
+        showMessage('Bereit zum Starten! GPS wird aktiviert sobald du auf "Training starten" drückst.', 'info');
+    </script>
+</body>
+</html>
