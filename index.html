@@ -39,8 +39,14 @@
         .header {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            justify-content: space-between;
             margin-bottom: 1.5rem;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
         
         .header svg {
@@ -53,6 +59,42 @@
             font-size: 1.5rem;
             font-weight: bold;
             color: #1f2937;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: #f3f4f6;
+            padding: 0.25rem;
+            border-radius: 0.75rem;
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            background: transparent;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nav-tab.active {
+            background: white;
+            color: #2563eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .view {
+            display: none;
+        }
+        
+        .view.active {
+            display: block;
         }
         
         .stats-grid {
@@ -175,6 +217,16 @@
             background: #dc2626;
         }
         
+        .btn-save {
+            flex: 1;
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-save:active {
+            background: #2563eb;
+        }
+        
         .btn-reset {
             background: #d1d5db;
             color: #374151;
@@ -227,69 +279,241 @@
             font-size: 0.875rem;
             color: #6b7280;
         }
+        
+        /* Archiv Styles */
+        .training-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .training-item {
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .training-item:active {
+            background: #f3f4f6;
+            border-color: #2563eb;
+        }
+        
+        .training-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .training-date {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .training-time {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .training-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .training-stat {
+            color: #4b5563;
+        }
+        
+        .training-stat strong {
+            color: #1f2937;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6b7280;
+        }
+        
+        .empty-state svg {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1rem;
+            color: #d1d5db;
+        }
+        
+        .empty-state p {
+            font-size: 0.875rem;
+        }
+        
+        /* Detail View */
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .back-btn {
+            padding: 0.5rem;
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .back-btn:active {
+            background: #e5e7eb;
+        }
+        
+        .detail-title {
+            flex: 1;
+        }
+        
+        .detail-title h2 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .detail-title p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .delete-btn {
+            padding: 0.5rem;
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .delete-btn:active {
+            background: #fecaca;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card">
             <div class="header">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-                <h1>Jogging Tracker</h1>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-box blue">
-                    <p class="stat-label">Zeit</p>
-                    <p id="time" class="stat-value">00:00:00</p>
-                </div>
-                <div class="stat-box green">
-                    <p class="stat-label">Distanz</p>
-                    <p id="distance" class="stat-value">0.00 km</p>
-                </div>
-                <div class="stat-box purple">
-                    <p class="stat-label">Pace</p>
-                    <p id="pace" class="stat-value">0:00</p>
-                    <p class="stat-unit">min/km</p>
-                </div>
-                <div class="stat-box orange">
-                    <p class="stat-label">Geschwindigkeit</p>
-                    <p id="speed" class="stat-value">0.0</p>
-                    <p class="stat-unit">km/h</p>
-                </div>
-            </div>
-
-            <div id="message" class="message hidden"></div>
-
-            <div class="controls">
-                <button id="startBtn" class="btn-start">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                <div class="header-left">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
-                    Training starten
-                </button>
-                <button id="stopBtn" class="btn-stop hidden">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"/>
-                    </svg>
-                    Training stoppen
-                </button>
-                <button id="resetBtn" class="btn-reset hidden">
-                    Reset
-                </button>
+                    <h1>Jogging Tracker</h1>
+                </div>
             </div>
 
-            <div id="status" class="status hidden">
-                <div class="status-indicator">
-                    <div class="status-dot"></div>
-                    <span class="status-text">Tracking aktiv...</span>
+            <!-- Navigation Tabs -->
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-view="training">Training</button>
+                <button class="nav-tab" data-view="archive">Archiv</button>
+            </div>
+
+            <!-- Training View -->
+            <div id="trainingView" class="view active">
+                <div class="stats-grid">
+                    <div class="stat-box blue">
+                        <p class="stat-label">Zeit</p>
+                        <p id="time" class="stat-value">00:00:00</p>
+                    </div>
+                    <div class="stat-box green">
+                        <p class="stat-label">Distanz</p>
+                        <p id="distance" class="stat-value">0.00 km</p>
+                    </div>
+                    <div class="stat-box purple">
+                        <p class="stat-label">Ø Pace</p>
+                        <p id="avgPace" class="stat-value">0:00</p>
+                        <p class="stat-unit">min/km</p>
+                    </div>
+                    <div class="stat-box orange">
+                        <p class="stat-label">Aktuelle Pace</p>
+                        <p id="currentPace" class="stat-value">0:00</p>
+                        <p class="stat-unit">min/km</p>
+                    </div>
+                    <div class="stat-box blue">
+                        <p class="stat-label">Geschwindigkeit</p>
+                        <p id="speed" class="stat-value">0.0</p>
+                        <p class="stat-unit">km/h</p>
+                    </div>
+                </div>
+
+                <div id="message" class="message hidden"></div>
+
+                <div class="controls">
+                    <button id="startBtn" class="btn-start">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                        </svg>
+                        Training starten
+                    </button>
+                    <button id="stopBtn" class="btn-stop hidden">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"/>
+                        </svg>
+                        Training stoppen
+                    </button>
+                    <button id="saveBtn" class="btn-save hidden">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Speichern
+                    </button>
+                    <button id="resetBtn" class="btn-reset hidden">
+                        Reset
+                    </button>
+                </div>
+
+                <div id="status" class="status hidden">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span class="status-text">Tracking aktiv...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Archive View -->
+            <div id="archiveView" class="view">
+                <div id="archiveList" class="training-list">
+                    <!-- Trainings werden hier eingefügt -->
+                </div>
+                <div id="emptyState" class="empty-state">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                    </svg>
+                    <p>Noch keine Trainings gespeichert</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.75rem;">Starte dein erstes Training!</p>
+                </div>
+            </div>
+
+            <!-- Detail View -->
+            <div id="detailView" class="view">
+                <div class="detail-header">
+                    <button id="backBtn" class="back-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.5rem; height: 1.5rem;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="detail-title">
+                        <h2 id="detailDate">Training</h2>
+                        <p id="detailTime"></p>
+                    </div>
+                    <button id="deleteBtn" class="delete-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.5rem; height: 1.5rem;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div id="detailStats" class="stats-grid">
+                    <!-- Detail-Statistiken werden hier eingefügt -->
                 </div>
             </div>
         </div>
 
         <div class="footer">
-            Freies Training • Version 1.0
+            Jogging Tracker • Version 2.0
         </div>
     </div>
 
@@ -302,17 +526,56 @@
         let watchId = null;
         let timerInterval = null;
         let route = [];
+        let currentView = 'training';
+        let selectedTrainingId = null;
 
         // DOM Elemente
         const timeEl = document.getElementById('time');
         const distanceEl = document.getElementById('distance');
-        const paceEl = document.getElementById('pace');
+        const avgPaceEl = document.getElementById('avgPace');
+        const currentPaceEl = document.getElementById('currentPace');
         const speedEl = document.getElementById('speed');
         const messageEl = document.getElementById('message');
         const statusEl = document.getElementById('status');
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
+        const saveBtn = document.getElementById('saveBtn');
         const resetBtn = document.getElementById('resetBtn');
+        
+        const trainingView = document.getElementById('trainingView');
+        const archiveView = document.getElementById('archiveView');
+        const detailView = document.getElementById('detailView');
+        const archiveList = document.getElementById('archiveList');
+        const emptyState = document.getElementById('emptyState');
+        
+        const backBtn = document.getElementById('backBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+
+        // Navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const view = tab.dataset.view;
+                switchView(view);
+            });
+        });
+
+        function switchView(view) {
+            currentView = view;
+            
+            // Update tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.view === view);
+            });
+            
+            // Update views
+            trainingView.classList.toggle('active', view === 'training');
+            archiveView.classList.toggle('active', view === 'archive');
+            detailView.classList.remove('active');
+            
+            if (view === 'archive') {
+                loadArchive();
+            }
+        }
 
         // Hilfsfunktionen
         function formatTime(seconds) {
@@ -328,6 +591,17 @@
             const minutes = Math.floor(secondsPerKm / 60);
             const seconds = Math.floor(secondsPerKm % 60);
             return `${minutes}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('de-DE', options);
+        }
+
+        function formatTimeOnly(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
         }
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -355,9 +629,132 @@
         function updateDisplay() {
             timeEl.textContent = formatTime(time);
             distanceEl.textContent = `${(distance / 1000).toFixed(2)} km`;
+            
+            if (distance > 0 && time > 0) {
+                const avgSpeedMPS = distance / time;
+                avgPaceEl.textContent = formatPace(avgSpeedMPS);
+            } else {
+                avgPaceEl.textContent = '0:00';
+            }
         }
 
-        // Tracking Funktionen
+        // Storage Functions
+        function saveTraining() {
+            if (distance < 100) {
+                showMessage('Training zu kurz zum Speichern (mindestens 100m)', 'error');
+                return;
+            }
+
+            const training = {
+                id: Date.now(),
+                date: Date.now(),
+                duration: time,
+                distance: distance,
+                avgPace: distance > 0 && time > 0 ? formatPace(distance / time) : '0:00',
+                route: route
+            };
+
+            const trainings = getTrainings();
+            trainings.push(training);
+            localStorage.setItem('trainings', JSON.stringify(trainings));
+
+            showMessage('Training gespeichert! 🎉', 'success');
+            
+            // Buttons aktualisieren
+            saveBtn.classList.add('hidden');
+            resetBtn.classList.remove('hidden');
+            
+            setTimeout(() => {
+                switchView('archive');
+            }, 1500);
+        }
+
+        function getTrainings() {
+            const data = localStorage.getItem('trainings');
+            return data ? JSON.parse(data) : [];
+        }
+
+        function deleteTraining(id) {
+            if (!confirm('Training wirklich löschen?')) return;
+            
+            const trainings = getTrainings().filter(t => t.id !== id);
+            localStorage.setItem('trainings', JSON.stringify(trainings));
+            
+            switchView('archive');
+        }
+
+        function loadArchive() {
+            const trainings = getTrainings();
+            
+            if (trainings.length === 0) {
+                archiveList.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            trainings.sort((a, b) => b.date - a.date);
+            
+            archiveList.innerHTML = trainings.map(training => `
+                <div class="training-item" data-id="${training.id}">
+                    <div class="training-header">
+                        <span class="training-date">${formatDate(training.date)}</span>
+                        <span class="training-time">${formatTimeOnly(training.date)}</span>
+                    </div>
+                    <div class="training-stats">
+                        <span class="training-stat"><strong>${(training.distance / 1000).toFixed(2)}</strong> km</span>
+                        <span class="training-stat"><strong>${formatTime(training.duration)}</strong></span>
+                        <span class="training-stat"><strong>${training.avgPace}</strong> /km</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Event Listener für Training-Items
+            document.querySelectorAll('.training-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const id = parseInt(item.dataset.id);
+                    showTrainingDetail(id);
+                });
+            });
+        }
+
+        function showTrainingDetail(id) {
+            const training = getTrainings().find(t => t.id === id);
+            if (!training) return;
+            
+            selectedTrainingId = id;
+            
+            document.getElementById('detailDate').textContent = formatDate(training.date);
+            document.getElementById('detailTime').textContent = formatTimeOnly(training.date);
+            
+            document.getElementById('detailStats').innerHTML = `
+                <div class="stat-box blue">
+                    <p class="stat-label">Dauer</p>
+                    <p class="stat-value">${formatTime(training.duration)}</p>
+                </div>
+                <div class="stat-box green">
+                    <p class="stat-label">Distanz</p>
+                    <p class="stat-value">${(training.distance / 1000).toFixed(2)} km</p>
+                </div>
+                <div class="stat-box purple">
+                    <p class="stat-label">Ø Pace</p>
+                    <p class="stat-value">${training.avgPace}</p>
+                    <p class="stat-unit">min/km</p>
+                </div>
+                <div class="stat-box orange">
+                    <p class="stat-label">Ø Geschwindigkeit</p>
+                    <p class="stat-value">${((training.distance / training.duration) * 3.6).toFixed(1)}</p>
+                    <p class="stat-unit">km/h</p>
+                </div>
+            `;
+            
+            trainingView.classList.remove('active');
+            archiveView.classList.remove('active');
+            detailView.classList.add('active');
+        }
+
+        // Tracking Functions
         async function startTracking() {
             hideMessage();
 
@@ -368,7 +765,6 @@
 
             showMessage('GPS wird initialisiert...', 'info');
 
-            // Erste Position abfragen für Berechtigung
             try {
                 await new Promise((resolve, reject) => {
                     navigator.geolocation.getCurrentPosition(
@@ -402,7 +798,6 @@
                 return;
             }
 
-            // Starte Tracking
             watchId = navigator.geolocation.watchPosition(
                 (position) => {
                     const { latitude, longitude, speed } = position.coords;
@@ -430,7 +825,9 @@
                     if (speed && speed > 0) {
                         const kmh = speed * 3.6;
                         speedEl.textContent = kmh.toFixed(1);
-                        paceEl.textContent = formatPace(speed);
+                        currentPaceEl.textContent = formatPace(speed);
+                    } else {
+                        currentPaceEl.textContent = '0:00';
                     }
                 },
                 (err) => {
@@ -444,7 +841,6 @@
                 }
             );
 
-            // Starte Timer
             timerInterval = setInterval(() => {
                 time++;
                 updateDisplay();
@@ -471,6 +867,7 @@
             statusEl.classList.add('hidden');
             
             if (time > 0 || distance > 0) {
+                saveBtn.classList.remove('hidden');
                 resetBtn.classList.remove('hidden');
             }
             
@@ -485,9 +882,11 @@
             
             timeEl.textContent = '00:00:00';
             distanceEl.textContent = '0.00 km';
-            paceEl.textContent = '0:00';
+            avgPaceEl.textContent = '0:00';
+            currentPaceEl.textContent = '0:00';
             speedEl.textContent = '0.0';
             
+            saveBtn.classList.add('hidden');
             resetBtn.classList.add('hidden');
             hideMessage();
         }
@@ -495,7 +894,14 @@
         // Event Listeners
         startBtn.addEventListener('click', startTracking);
         stopBtn.addEventListener('click', stopTracking);
+        saveBtn.addEventListener('click', saveTraining);
         resetBtn.addEventListener('click', resetTracking);
+        backBtn.addEventListener('click', () => switchView('archive'));
+        deleteBtn.addEventListener('click', () => {
+            if (selectedTrainingId) {
+                deleteTraining(selectedTrainingId);
+            }
+        });
 
         // Initiale Nachricht
         showMessage('Bereit zum Starten! GPS wird aktiviert sobald du auf "Training starten" drückst.', 'info');
