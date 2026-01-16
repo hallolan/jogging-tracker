@@ -7,11 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Jogging Tracker</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -22,375 +18,87 @@
             user-select: none;
         }
         
-        .container {
-            padding: 1rem;
-            max-width: 448px;
-            margin: 0 auto;
-        }
+        .container { padding: 1rem; max-width: 448px; margin: 0 auto; }
+        .card { background: white; border-radius: 1.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: 1.5rem; margin-top: 2rem; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+        .header-left { display: flex; align-items: center; gap: 0.75rem; }
+        .header svg { width: 2rem; height: 2rem; color: #2563eb; }
+        .header h1 { font-size: 1.5rem; font-weight: bold; color: #1f2937; }
         
-        .card {
-            background: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin-top: 2rem;
-        }
+        .nav-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: #f3f4f6; padding: 0.25rem; border-radius: 0.75rem; }
+        .nav-tab { flex: 1; padding: 0.75rem; border: none; background: transparent; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; color: #6b7280; cursor: pointer; transition: all 0.2s; }
+        .nav-tab.active { background: white; color: #2563eb; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
         
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-        }
+        .view { display: none; }
+        .view.active { display: block; }
         
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .header svg {
-            width: 2rem;
-            height: 2rem;
-            color: #2563eb;
-        }
-        
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #1f2937;
-        }
-        
-        .nav-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            background: #f3f4f6;
-            padding: 0.25rem;
-            border-radius: 0.75rem;
-        }
-        
-        .nav-tab {
-            flex: 1;
-            padding: 0.75rem;
-            border: none;
-            background: transparent;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #6b7280;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .nav-tab.active {
-            background: white;
-            color: #2563eb;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .view {
-            display: none;
-        }
-        
-        .view.active {
-            display: block;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .stat-box {
-            border-radius: 0.75rem;
-            padding: 1rem;
-        }
-        
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-box { border-radius: 0.75rem; padding: 1rem; }
         .stat-box.blue { background: #dbeafe; }
         .stat-box.green { background: #d1fae5; }
         .stat-box.purple { background: #e9d5ff; }
         .stat-box.orange { background: #fed7aa; }
-        
-        .stat-label {
-            font-size: 0.875rem;
-            color: #4b5563;
-            margin-bottom: 0.25rem;
-        }
-        
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        
+        .stat-label { font-size: 0.875rem; color: #4b5563; margin-bottom: 0.25rem; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; }
         .stat-box.blue .stat-value { color: #2563eb; }
         .stat-box.green .stat-value { color: #059669; }
         .stat-box.purple .stat-value { color: #7c3aed; }
         .stat-box.orange .stat-value { color: #ea580c; }
+        .stat-unit { font-size: 0.75rem; color: #6b7280; }
         
-        .stat-unit {
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
+        .message { margin-bottom: 1rem; border-radius: 0.5rem; padding: 0.75rem; border: 1px solid; }
+        .message.hidden { display: none; }
+        .message.error { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+        .message.success { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+        .message.info { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+        .message p { font-size: 0.875rem; }
         
-        .message {
-            margin-bottom: 1rem;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            border: 1px solid;
-        }
+        .controls { display: flex; gap: 0.75rem; }
+        button { font-family: inherit; font-size: 1rem; font-weight: 600; padding: 1rem 1.5rem; border: none; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        button.hidden { display: none; }
+        button svg { width: 1.25rem; height: 1.25rem; }
+        .btn-start { flex: 1; background: #10b981; color: white; }
+        .btn-start:active { background: #059669; }
+        .btn-stop { flex: 1; background: #ef4444; color: white; }
+        .btn-stop:active { background: #dc2626; }
+        .btn-save { flex: 1; background: #3b82f6; color: white; }
+        .btn-save:active { background: #2563eb; }
+        .btn-reset { background: #d1d5db; color: #374151; }
+        .btn-reset:active { background: #9ca3af; }
         
-        .message.hidden {
-            display: none;
-        }
+        .status { margin-top: 1rem; text-align: center; }
+        .status.hidden { display: none; }
+        .status-indicator { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .status-dot { width: 0.5rem; height: 0.5rem; background: #10b981; border-radius: 50%; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .status-text { font-size: 0.875rem; color: #4b5563; }
         
-        .message.error {
-            background: #fef2f2;
-            border-color: #fecaca;
-            color: #991b1b;
-        }
+        .countdown-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+        .countdown-overlay.hidden { display: none; }
+        .countdown-number { font-size: 10rem; font-weight: bold; color: white; line-height: 1; }
+        .countdown-text { color: #9ca3af; font-size: 1.25rem; margin-top: 2rem; }
         
-        .message.success {
-            background: #f0fdf4;
-            border-color: #bbf7d0;
-            color: #166534;
-        }
-        
-        .message.info {
-            background: #eff6ff;
-            border-color: #bfdbfe;
-            color: #1e40af;
-        }
-        
-        .message p {
-            font-size: 0.875rem;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 0.75rem;
-        }
-        
-        button {
-            font-family: inherit;
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 1rem 1.5rem;
-            border: none;
-            border-radius: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        
-        button.hidden {
-            display: none;
-        }
-        
-        button svg {
-            width: 1.25rem;
-            height: 1.25rem;
-        }
-        
-        .btn-start {
-            flex: 1;
-            background: #10b981;
-            color: white;
-        }
-        
-        .btn-start:active {
-            background: #059669;
-        }
-        
-        .btn-stop {
-            flex: 1;
-            background: #ef4444;
-            color: white;
-        }
-        
-        .btn-stop:active {
-            background: #dc2626;
-        }
-        
-        .btn-save {
-            flex: 1;
-            background: #3b82f6;
-            color: white;
-        }
-        
-        .btn-save:active {
-            background: #2563eb;
-        }
-        
-        .btn-reset {
-            background: #d1d5db;
-            color: #374151;
-        }
-        
-        .btn-reset:active {
-            background: #9ca3af;
-        }
-        
-        .status {
-            margin-top: 1rem;
-            text-align: center;
-        }
-        
-        .status.hidden {
-            display: none;
-        }
-        
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        
-        .status-dot {
-            width: 0.5rem;
-            height: 0.5rem;
-            background: #10b981;
-            border-radius: 50%;
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .status-text {
-            font-size: 0.875rem;
-            color: #4b5563;
-        }
-        
-        .footer {
-            background: white;
-            border-radius: 0 0 1.5rem 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
-            text-align: center;
-            font-size: 0.875rem;
-            color: #6b7280;
-        }
-        
-        /* Archiv Styles */
-        .training-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        
-        .training-item {
-            background: #f9fafb;
-            border-radius: 0.75rem;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid transparent;
-        }
-        
-        .training-item:active {
-            background: #f3f4f6;
-            border-color: #2563eb;
-        }
-        
-        .training-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .training-date {
-            font-weight: 600;
-            color: #1f2937;
-        }
-        
-        .training-time {
-            font-size: 0.875rem;
-            color: #6b7280;
-        }
-        
-        .training-stats {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.875rem;
-        }
-        
-        .training-stat {
-            color: #4b5563;
-        }
-        
-        .training-stat strong {
-            color: #1f2937;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #6b7280;
-        }
-        
-        .empty-state svg {
-            width: 4rem;
-            height: 4rem;
-            margin: 0 auto 1rem;
-            color: #d1d5db;
-        }
-        
-        .empty-state p {
-            font-size: 0.875rem;
-        }
-        
-        /* Detail View */
-        .detail-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .back-btn {
-            padding: 0.5rem;
-            background: #f3f4f6;
-            color: #374151;
-        }
-        
-        .back-btn:active {
-            background: #e5e7eb;
-        }
-        
-        .detail-title {
-            flex: 1;
-        }
-        
-        .detail-title h2 {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #1f2937;
-        }
-        
-        .detail-title p {
-            font-size: 0.875rem;
-            color: #6b7280;
-        }
-        
-        .delete-btn {
-            padding: 0.5rem;
-            background: #fee2e2;
-            color: #dc2626;
-        }
-        
-        .delete-btn:active {
-            background: #fecaca;
-        }
+        .footer { background: white; border-radius: 0 0 1.5rem 1.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: 1rem; text-align: center; font-size: 0.875rem; color: #6b7280; }
+        .training-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .training-item { background: #f9fafb; border-radius: 0.75rem; padding: 1rem; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
+        .training-item:active { background: #f3f4f6; border-color: #2563eb; }
+        .training-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .training-date { font-weight: 600; color: #1f2937; }
+        .training-time { font-size: 0.875rem; color: #6b7280; }
+        .training-stats { display: flex; gap: 1rem; font-size: 0.875rem; }
+        .training-stat { color: #4b5563; }
+        .training-stat strong { color: #1f2937; }
+        .empty-state { text-align: center; padding: 3rem 1rem; color: #6b7280; }
+        .empty-state svg { width: 4rem; height: 4rem; margin: 0 auto 1rem; color: #d1d5db; }
+        .empty-state p { font-size: 0.875rem; }
+        .detail-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .back-btn { padding: 0.5rem; background: #f3f4f6; color: #374151; }
+        .back-btn:active { background: #e5e7eb; }
+        .detail-title { flex: 1; }
+        .detail-title h2 { font-size: 1.25rem; font-weight: bold; color: #1f2937; }
+        .detail-title p { font-size: 0.875rem; color: #6b7280; }
+        .delete-btn { padding: 0.5rem; background: #fee2e2; color: #dc2626; }
+        .delete-btn:active { background: #fecaca; }
     </style>
 </head>
 <body>
@@ -398,513 +106,107 @@
         <div class="card">
             <div class="header">
                 <div class="header-left">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     <h1>Jogging Tracker</h1>
                 </div>
             </div>
-
-            <!-- Navigation Tabs -->
             <div class="nav-tabs">
                 <button class="nav-tab active" data-view="training">Training</button>
                 <button class="nav-tab" data-view="archive">Archiv</button>
             </div>
-
-            <!-- Training View -->
             <div id="trainingView" class="view active">
                 <div class="stats-grid">
-                    <div class="stat-box blue">
-                        <p class="stat-label">Zeit</p>
-                        <p id="time" class="stat-value">00:00:00</p>
-                    </div>
-                    <div class="stat-box green">
-                        <p class="stat-label">Distanz</p>
-                        <p id="distance" class="stat-value">0.00 km</p>
-                    </div>
-                    <div class="stat-box purple">
-                        <p class="stat-label">Ø Pace</p>
-                        <p id="avgPace" class="stat-value">0:00</p>
-                        <p class="stat-unit">min/km</p>
-                    </div>
-                    <div class="stat-box orange">
-                        <p class="stat-label">Aktuelle Pace</p>
-                        <p id="currentPace" class="stat-value">0:00</p>
-                        <p class="stat-unit">min/km</p>
-                    </div>
-                    <div class="stat-box blue">
-                        <p class="stat-label">Geschwindigkeit</p>
-                        <p id="speed" class="stat-value">0.0</p>
-                        <p class="stat-unit">km/h</p>
-                    </div>
+                    <div class="stat-box blue"><p class="stat-label">Zeit</p><p id="time" class="stat-value">00:00:00</p></div>
+                    <div class="stat-box green"><p class="stat-label">Distanz</p><p id="distance" class="stat-value">0.00 km</p></div>
+                    <div class="stat-box purple"><p class="stat-label">Ø Pace</p><p id="avgPace" class="stat-value">0:00</p><p class="stat-unit">min/km</p></div>
+                    <div class="stat-box orange"><p class="stat-label">Aktuelle Pace</p><p id="currentPace" class="stat-value">0:00</p><p class="stat-unit">min/km</p></div>
+                    <div class="stat-box blue"><p class="stat-label">Geschwindigkeit</p><p id="speed" class="stat-value">0.0</p><p class="stat-unit">km/h</p></div>
                 </div>
-
                 <div id="message" class="message hidden"></div>
-
                 <div class="controls">
-                    <button id="startBtn" class="btn-start">
-                        <svg fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
-                        </svg>
-                        Training starten
-                    </button>
-                    <button id="stopBtn" class="btn-stop hidden">
-                        <svg fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"/>
-                        </svg>
-                        Training stoppen
-                    </button>
-                    <button id="saveBtn" class="btn-save hidden">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Speichern
-                    </button>
-                    <button id="resetBtn" class="btn-reset hidden">
-                        Reset
-                    </button>
+                    <button id="startBtn" class="btn-start"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>Training starten</button>
+                    <button id="stopBtn" class="btn-stop hidden"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"/></svg>Training stoppen</button>
+                    <button id="saveBtn" class="btn-save hidden"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Speichern</button>
+                    <button id="resetBtn" class="btn-reset hidden">Reset</button>
                 </div>
-
-                <div id="status" class="status hidden">
-                    <div class="status-indicator">
-                        <div class="status-dot"></div>
-                        <span class="status-text">Tracking aktiv...</span>
-                    </div>
-                </div>
+                <div id="status" class="status hidden"><div class="status-indicator"><div class="status-dot"></div><span class="status-text">Tracking aktiv...</span></div></div>
             </div>
-
-            <!-- Archive View -->
             <div id="archiveView" class="view">
-                <div id="archiveList" class="training-list">
-                    <!-- Trainings werden hier eingefügt -->
-                </div>
-                <div id="emptyState" class="empty-state">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                    </svg>
-                    <p>Noch keine Trainings gespeichert</p>
-                    <p style="margin-top: 0.5rem; font-size: 0.75rem;">Starte dein erstes Training!</p>
-                </div>
+                <div id="archiveList" class="training-list"></div>
+                <div id="emptyState" class="empty-state"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg><p>Noch keine Trainings gespeichert</p><p style="margin-top: 0.5rem; font-size: 0.75rem;">Starte dein erstes Training!</p></div>
             </div>
-
-            <!-- Detail View -->
             <div id="detailView" class="view">
                 <div class="detail-header">
-                    <button id="backBtn" class="back-btn">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.5rem; height: 1.5rem;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="detail-title">
-                        <h2 id="detailDate">Training</h2>
-                        <p id="detailTime"></p>
-                    </div>
-                    <button id="deleteBtn" class="delete-btn">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.5rem; height: 1.5rem;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                        </svg>
-                    </button>
+                    <button id="backBtn" class="back-btn"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.5rem; height: 1.5rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                    <div class="detail-title"><h2 id="detailDate">Training</h2><p id="detailTime"></p></div>
+                    <button id="deleteBtn" class="delete-btn"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.5rem; height: 1.5rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                 </div>
-
-                <div id="detailStats" class="stats-grid">
-                    <!-- Detail-Statistiken werden hier eingefügt -->
-                </div>
+                <div id="detailStats" class="stats-grid"></div>
             </div>
         </div>
-
-        <div class="footer">
-            Jogging Tracker • Version 2.0
-        </div>
+        <div class="footer">Jogging Tracker • Version 2.1</div>
     </div>
+    <div id="countdownOverlay" class="countdown-overlay hidden">
+        <div id="countdownNumber" class="countdown-number">5</div>
+        <div class="countdown-text">Mach dich bereit...</div>
+    </div>
+<script>
+let isTracking=false,isPreparing=false,time=0,distance=0,lastPosition=null,lastValidPosition=null,watchId=null,timerInterval=null,route=[],currentView="training",selectedTrainingId=null,speedReadings=[],lastUpdateTime=null;
+const timeEl=document.getElementById("time"),distanceEl=document.getElementById("distance"),avgPaceEl=document.getElementById("avgPace"),currentPaceEl=document.getElementById("currentPace"),speedEl=document.getElementById("speed"),messageEl=document.getElementById("message"),statusEl=document.getElementById("status"),startBtn=document.getElementById("startBtn"),stopBtn=document.getElementById("stopBtn"),saveBtn=document.getElementById("saveBtn"),resetBtn=document.getElementById("resetBtn"),trainingView=document.getElementById("trainingView"),archiveView=document.getElementById("archiveView"),detailView=document.getElementById("detailView"),archiveList=document.getElementById("archiveList"),emptyState=document.getElementById("emptyState"),backBtn=document.getElementById("backBtn"),deleteBtn=document.getElementById("deleteBtn"),countdownOverlay=document.getElementById("countdownOverlay"),countdownNumber=document.getElementById("countdownNumber");
 
-    <script>
-        // App State
-        let isTracking = false;
-        let time = 0;
-        let distance = 0;
-        let lastPosition = null;
-        let watchId = null;
-        let timerInterval = null;
-        let route = [];
-        let currentView = 'training';
-        let selectedTrainingId = null;
+document.querySelectorAll(".nav-tab").forEach(t=>t.addEventListener("click",()=>switchView(t.dataset.view)));
 
-        // DOM Elemente
-        const timeEl = document.getElementById('time');
-        const distanceEl = document.getElementById('distance');
-        const avgPaceEl = document.getElementById('avgPace');
-        const currentPaceEl = document.getElementById('currentPace');
-        const speedEl = document.getElementById('speed');
-        const messageEl = document.getElementById('message');
-        const statusEl = document.getElementById('status');
-        const startBtn = document.getElementById('startBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const saveBtn = document.getElementById('saveBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        
-        const trainingView = document.getElementById('trainingView');
-        const archiveView = document.getElementById('archiveView');
-        const detailView = document.getElementById('detailView');
-        const archiveList = document.getElementById('archiveList');
-        const emptyState = document.getElementById('emptyState');
-        
-        const backBtn = document.getElementById('backBtn');
-        const deleteBtn = document.getElementById('deleteBtn');
+function switchView(v){currentView=v;document.querySelectorAll(".nav-tab").forEach(t=>t.classList.toggle("active",t.dataset.view===v));trainingView.classList.toggle("active",v==="training");archiveView.classList.toggle("active",v==="archive");detailView.classList.remove("active");if(v==="archive")loadArchive()}
 
-        // Navigation
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const view = tab.dataset.view;
-                switchView(view);
-            });
-        });
+function formatTime(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`}
 
-        function switchView(view) {
-            currentView = view;
-            
-            // Update tabs
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.toggle('active', tab.dataset.view === view);
-            });
-            
-            // Update views
-            trainingView.classList.toggle('active', view === 'training');
-            archiveView.classList.toggle('active', view === 'archive');
-            detailView.classList.remove('active');
-            
-            if (view === 'archive') {
-                loadArchive();
-            }
-        }
+function formatPace(mps){if(mps===0)return"0:00";const spk=1000/mps,m=Math.floor(spk/60),s=Math.floor(spk%60);return `${m}:${String(s).padStart(2,"0")}`}
 
-        // Hilfsfunktionen
-        function formatTime(seconds) {
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = seconds % 60;
-            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-        }
+function formatDate(ts){return new Date(ts).toLocaleDateString("de-DE",{weekday:"short",year:"numeric",month:"short",day:"numeric"})}
 
-        function formatPace(metersPerSecond) {
-            if (metersPerSecond === 0) return '0:00';
-            const secondsPerKm = 1000 / metersPerSecond;
-            const minutes = Math.floor(secondsPerKm / 60);
-            const seconds = Math.floor(secondsPerKm % 60);
-            return `${minutes}:${String(seconds).padStart(2, '0')}`;
-        }
+function formatTimeOnly(ts){return new Date(ts).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}
 
-        function formatDate(timestamp) {
-            const date = new Date(timestamp);
-            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-            return date.toLocaleDateString('de-DE', options);
-        }
+function calculateDistance(lat1,lon1,lat2,lon2){const R=6371000,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180,a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))}
 
-        function formatTimeOnly(timestamp) {
-            const date = new Date(timestamp);
-            return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-        }
+function kalmanFilter(nv,pv,acc){if(!pv)return nv;const kg=acc/(acc+5);return{latitude:pv.latitude+kg*(nv.latitude-pv.latitude),longitude:pv.longitude+kg*(nv.longitude-pv.longitude)}}
 
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371000;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = 
-                Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon/2) * Math.sin(dLon/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c;
-        }
+function isValidMovement(dm,td,spd,acc){if(td<0.5)return false;if(acc>20&&(!spd||spd<1))return false;const cs=dm/td;if(cs>13.9)return false;if(dm<3&&cs<0.5)return false;if(spd&&spd>0){const sd=Math.abs(cs-spd);if(sd>3&&cs>spd*2)return false}return true}
 
-        function showMessage(text, type = 'info') {
-            messageEl.className = `message ${type}`;
-            messageEl.innerHTML = `<p>${text}</p>`;
-            messageEl.classList.remove('hidden');
-        }
+function showMessage(txt,type="info"){messageEl.className=`message ${type}`;messageEl.innerHTML=`<p>${txt}</p>`;messageEl.classList.remove("hidden")}
 
-        function hideMessage() {
-            messageEl.classList.add('hidden');
-        }
+function hideMessage(){messageEl.classList.add("hidden")}
 
-        function updateDisplay() {
-            timeEl.textContent = formatTime(time);
-            distanceEl.textContent = `${(distance / 1000).toFixed(2)} km`;
-            
-            if (distance > 0 && time > 0) {
-                const avgSpeedMPS = distance / time;
-                avgPaceEl.textContent = formatPace(avgSpeedMPS);
-            } else {
-                avgPaceEl.textContent = '0:00';
-            }
-        }
+function updateDisplay(){timeEl.textContent=formatTime(time);distanceEl.textContent=`${(distance/1000).toFixed(2)} km`;if(distance>0&&time>0){avgPaceEl.textContent=formatPace(distance/time)}else{avgPaceEl.textContent="0:00"}}
 
-        // Storage Functions
-        function saveTraining() {
-            if (distance < 100) {
-                showMessage('Training zu kurz zum Speichern (mindestens 100m)', 'error');
-                return;
-            }
+function saveTraining(){if(distance<100){showMessage("Training zu kurz zum Speichern (mindestens 100m)","error");return}const t={id:Date.now(),date:Date.now(),duration:time,distance:distance,avgPace:distance>0&&time>0?formatPace(distance/time):"0:00",route:route};const ts=getTrainings();ts.push(t);localStorage.setItem("trainings",JSON.stringify(ts));showMessage("Training gespeichert! 🎉","success");saveBtn.classList.add("hidden");resetBtn.classList.remove("hidden");setTimeout(()=>switchView("archive"),1500)}
 
-            const training = {
-                id: Date.now(),
-                date: Date.now(),
-                duration: time,
-                distance: distance,
-                avgPace: distance > 0 && time > 0 ? formatPace(distance / time) : '0:00',
-                route: route
-            };
+function getTrainings(){const d=localStorage.getItem("trainings");return d?JSON.parse(d):[]}
 
-            const trainings = getTrainings();
-            trainings.push(training);
-            localStorage.setItem('trainings', JSON.stringify(trainings));
+function deleteTraining(id){if(!confirm("Training wirklich löschen?"))return;const ts=getTrainings().filter(t=>t.id!==id);localStorage.setItem("trainings",JSON.stringify(ts));switchView("archive")}
 
-            showMessage('Training gespeichert! 🎉', 'success');
-            
-            // Buttons aktualisieren
-            saveBtn.classList.add('hidden');
-            resetBtn.classList.remove('hidden');
-            
-            setTimeout(() => {
-                switchView('archive');
-            }, 1500);
-        }
+function loadArchive(){const ts=getTrainings();if(ts.length===0){archiveList.innerHTML="";emptyState.style.display="block";return}emptyState.style.display="none";ts.sort((a,b)=>b.date-a.date);archiveList.innerHTML=ts.map(t=>`<div class="training-item" data-id="${t.id}"><div class="training-header"><span class="training-date">${formatDate(t.date)}</span><span class="training-time">${formatTimeOnly(t.date)}</span></div><div class="training-stats"><span class="training-stat"><strong>${(t.distance/1000).toFixed(2)}</strong> km</span><span class="training-stat"><strong>${formatTime(t.duration)}</strong></span><span class="training-stat"><strong>${t.avgPace}</strong> /km</span></div></div>`).join("");document.querySelectorAll(".training-item").forEach(item=>item.addEventListener("click",()=>showTrainingDetail(parseInt(item.dataset.id))))}
 
-        function getTrainings() {
-            const data = localStorage.getItem('trainings');
-            return data ? JSON.parse(data) : [];
-        }
+function showTrainingDetail(id){const t=getTrainings().find(tr=>tr.id===id);if(!t)return;selectedTrainingId=id;document.getElementById("detailDate").textContent=formatDate(t.date);document.getElementById("detailTime").textContent=formatTimeOnly(t.date);document.getElementById("detailStats").innerHTML=`<div class="stat-box blue"><p class="stat-label">Dauer</p><p class="stat-value">${formatTime(t.duration)}</p></div><div class="stat-box green"><p class="stat-label">Distanz</p><p class="stat-value">${(t.distance/1000).toFixed(2)} km</p></div><div class="stat-box purple"><p class="stat-label">Ø Pace</p><p class="stat-value">${t.avgPace}</p><p class="stat-unit">min/km</p></div><div class="stat-box orange"><p class="stat-label">Ø Geschwindigkeit</p><p class="stat-value">${((t.distance/t.duration)*3.6).toFixed(1)}</p><p class="stat-unit">km/h</p></div>`;trainingView.classList.remove("active");archiveView.classList.remove("active");detailView.classList.add("active")}
 
-        function deleteTraining(id) {
-            if (!confirm('Training wirklich löschen?')) return;
-            
-            const trainings = getTrainings().filter(t => t.id !== id);
-            localStorage.setItem('trainings', JSON.stringify(trainings));
-            
-            switchView('archive');
-        }
+async function startTracking(){hideMessage();if(!navigator.geolocation){showMessage("GPS wird von deinem Browser nicht unterstützt","error");return}showMessage("GPS wird initialisiert...","info");try{await new Promise((resolve,reject)=>{navigator.geolocation.getCurrentPosition(pos=>{console.log("GPS Berechtigung erhalten");resolve(pos)},err=>{console.error("GPS Fehler:",err);let msg="GPS-Zugriff fehlgeschlagen. ";if(err.code===1){msg+="Bitte erlaube den Standortzugriff wenn Safari fragt, oder aktiviere ihn in: Einstellungen → Safari → Standort → Beim Verwenden erlauben."}else if(err.code===2){msg+="Standort nicht verfügbar. Bist du draußen mit freier Sicht zum Himmel?"}else if(err.code===3){msg+="Zeitüberschreitung beim GPS-Zugriff. Versuche es nochmal."}reject(new Error(msg))},{enableHighAccuracy:true,timeout:15000,maximumAge:0})})}catch(err){showMessage(err.message,"error");return}isPreparing=true;hideMessage();startGPSWatch();await showCountdown();startActualTracking()}
 
-        function loadArchive() {
-            const trainings = getTrainings();
-            
-            if (trainings.length === 0) {
-                archiveList.innerHTML = '';
-                emptyState.style.display = 'block';
-                return;
-            }
-            
-            emptyState.style.display = 'none';
-            
-            trainings.sort((a, b) => b.date - a.date);
-            
-            archiveList.innerHTML = trainings.map(training => `
-                <div class="training-item" data-id="${training.id}">
-                    <div class="training-header">
-                        <span class="training-date">${formatDate(training.date)}</span>
-                        <span class="training-time">${formatTimeOnly(training.date)}</span>
-                    </div>
-                    <div class="training-stats">
-                        <span class="training-stat"><strong>${(training.distance / 1000).toFixed(2)}</strong> km</span>
-                        <span class="training-stat"><strong>${formatTime(training.duration)}</strong></span>
-                        <span class="training-stat"><strong>${training.avgPace}</strong> /km</span>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Event Listener für Training-Items
-            document.querySelectorAll('.training-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const id = parseInt(item.dataset.id);
-                    showTrainingDetail(id);
-                });
-            });
-        }
+async function showCountdown(){countdownOverlay.classList.remove("hidden");for(let i=5;i>0;i--){countdownNumber.textContent=i;await new Promise(r=>setTimeout(r,1000))}countdownNumber.textContent="LOS!";await new Promise(r=>setTimeout(r,500));countdownOverlay.classList.add("hidden")}
 
-        function showTrainingDetail(id) {
-            const training = getTrainings().find(t => t.id === id);
-            if (!training) return;
-            
-            selectedTrainingId = id;
-            
-            document.getElementById('detailDate').textContent = formatDate(training.date);
-            document.getElementById('detailTime').textContent = formatTimeOnly(training.date);
-            
-            document.getElementById('detailStats').innerHTML = `
-                <div class="stat-box blue">
-                    <p class="stat-label">Dauer</p>
-                    <p class="stat-value">${formatTime(training.duration)}</p>
-                </div>
-                <div class="stat-box green">
-                    <p class="stat-label">Distanz</p>
-                    <p class="stat-value">${(training.distance / 1000).toFixed(2)} km</p>
-                </div>
-                <div class="stat-box purple">
-                    <p class="stat-label">Ø Pace</p>
-                    <p class="stat-value">${training.avgPace}</p>
-                    <p class="stat-unit">min/km</p>
-                </div>
-                <div class="stat-box orange">
-                    <p class="stat-label">Ø Geschwindigkeit</p>
-                    <p class="stat-value">${((training.distance / training.duration) * 3.6).toFixed(1)}</p>
-                    <p class="stat-unit">km/h</p>
-                </div>
-            `;
-            
-            trainingView.classList.remove('active');
-            archiveView.classList.remove('active');
-            detailView.classList.add('active');
-        }
+function startGPSWatch(){watchId=navigator.geolocation.watchPosition(pos=>{const{latitude,longitude,speed,accuracy}=pos.coords,ct=Date.now();if(isPreparing)return;hideMessage();const fp=kalmanFilter({latitude,longitude},lastValidPosition,accuracy||10);route.push({latitude:fp.latitude,longitude:fp.longitude,timestamp:ct,accuracy:accuracy,speed:speed});if(lastValidPosition&&lastUpdateTime){const td=(ct-lastUpdateTime)/1000,da=calculateDistance(lastValidPosition.latitude,lastValidPosition.longitude,fp.latitude,fp.longitude);if(isValidMovement(da,td,speed,accuracy||10)){distance+=da;updateDisplay();lastValidPosition=fp;lastUpdateTime=ct}}else{lastValidPosition=fp;lastUpdateTime=ct}lastPosition={latitude,longitude};if(speed&&speed>0.3){speedReadings.push(speed);if(speedReadings.length>5)speedReadings.shift();const as=speedReadings.reduce((a,b)=>a+b,0)/speedReadings.length,kmh=as*3.6;speedEl.textContent=kmh.toFixed(1);currentPaceEl.textContent=formatPace(as)}else{currentPaceEl.textContent="--:--";speedEl.textContent="0.0";speedReadings=[]}},err=>{console.error("Watch Position Fehler:",err);showMessage("GPS-Signal verloren. Versuche freie Sicht zum Himmel zu haben.","error")},{enableHighAccuracy:true,maximumAge:0,timeout:15000})}
 
-        // Tracking Functions
-        async function startTracking() {
-            hideMessage();
+function startActualTracking(){isPreparing=false;isTracking=true;timerInterval=setInterval(()=>{time++;updateDisplay()},1000);startBtn.classList.add("hidden");stopBtn.classList.remove("hidden");statusEl.classList.remove("hidden");showMessage("Training läuft! 🏃‍♂️","success")}
 
-            if (!navigator.geolocation) {
-                showMessage('GPS wird von deinem Browser nicht unterstützt', 'error');
-                return;
-            }
+function stopTracking(){if(watchId)navigator.geolocation.clearWatch(watchId);if(timerInterval)clearInterval(timerInterval);isTracking=false;isPreparing=false;startBtn.classList.remove("hidden");stopBtn.classList.add("hidden");statusEl.classList.add("hidden");if(time>0||distance>0){saveBtn.classList.remove("hidden");resetBtn.classList.remove("hidden")}showMessage("Training beendet!","success")}
 
-            showMessage('GPS wird initialisiert...', 'info');
+function resetTracking(){time=0;distance=0;lastPosition=null;lastValidPosition=null;lastUpdateTime=null;route=[];speedReadings=[];isPreparing=false;timeEl.textContent="00:00:00";distanceEl.textContent="0.00 km";avgPaceEl.textContent="0:00";currentPaceEl.textContent="0:00";speedEl.textContent="0.0";saveBtn.classList.add("hidden");resetBtn.classList.add("hidden");hideMessage()}
 
-            try {
-                await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            console.log('GPS Berechtigung erhalten');
-                            resolve(position);
-                        },
-                        (err) => {
-                            console.error('GPS Fehler:', err);
-                            let errorMsg = 'GPS-Zugriff fehlgeschlagen. ';
-                            
-                            if (err.code === 1) {
-                                errorMsg += 'Bitte erlaube den Standortzugriff wenn Safari fragt, oder aktiviere ihn in: Einstellungen → Safari → Standort → "Beim Verwenden erlauben".';
-                            } else if (err.code === 2) {
-                                errorMsg += 'Standort nicht verfügbar. Bist du draußen mit freier Sicht zum Himmel?';
-                            } else if (err.code === 3) {
-                                errorMsg += 'Zeitüberschreitung beim GPS-Zugriff. Versuche es nochmal.';
-                            }
-                            
-                            reject(new Error(errorMsg));
-                        },
-                        {
-                            enableHighAccuracy: true,
-                            timeout: 15000,
-                            maximumAge: 0
-                        }
-                    );
-                });
-            } catch (err) {
-                showMessage(err.message, 'error');
-                return;
-            }
-
-            watchId = navigator.geolocation.watchPosition(
-                (position) => {
-                    const { latitude, longitude, speed } = position.coords;
-                    
-                    hideMessage();
-                    
-                    route.push({ latitude, longitude, timestamp: Date.now() });
-
-                    if (lastPosition) {
-                        const distanceAdded = calculateDistance(
-                            lastPosition.latitude,
-                            lastPosition.longitude,
-                            latitude,
-                            longitude
-                        );
-                        
-                        if (distanceAdded > 2 && distanceAdded < 100) {
-                            distance += distanceAdded;
-                            updateDisplay();
-                        }
-                    }
-
-                    lastPosition = { latitude, longitude };
-
-                    if (speed && speed > 0) {
-                        const kmh = speed * 3.6;
-                        speedEl.textContent = kmh.toFixed(1);
-                        currentPaceEl.textContent = formatPace(speed);
-                    } else {
-                        currentPaceEl.textContent = '0:00';
-                    }
-                },
-                (err) => {
-                    console.error('Watch Position Fehler:', err);
-                    showMessage('GPS-Signal verloren. Versuche freie Sicht zum Himmel zu haben.', 'error');
-                },
-                {
-                    enableHighAccuracy: true,
-                    maximumAge: 0,
-                    timeout: 15000
-                }
-            );
-
-            timerInterval = setInterval(() => {
-                time++;
-                updateDisplay();
-            }, 1000);
-
-            isTracking = true;
-            startBtn.classList.add('hidden');
-            stopBtn.classList.remove('hidden');
-            statusEl.classList.remove('hidden');
-            showMessage('GPS aktiv! Gehe raus und starte dein Training.', 'success');
-        }
-
-        function stopTracking() {
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
-            }
-            if (timerInterval) {
-                clearInterval(timerInterval);
-            }
-            
-            isTracking = false;
-            startBtn.classList.remove('hidden');
-            stopBtn.classList.add('hidden');
-            statusEl.classList.add('hidden');
-            
-            if (time > 0 || distance > 0) {
-                saveBtn.classList.remove('hidden');
-                resetBtn.classList.remove('hidden');
-            }
-            
-            showMessage('Training beendet!', 'success');
-        }
-
-        function resetTracking() {
-            time = 0;
-            distance = 0;
-            lastPosition = null;
-            route = [];
-            
-            timeEl.textContent = '00:00:00';
-            distanceEl.textContent = '0.00 km';
-            avgPaceEl.textContent = '0:00';
-            currentPaceEl.textContent = '0:00';
-            speedEl.textContent = '0.0';
-            
-            saveBtn.classList.add('hidden');
-            resetBtn.classList.add('hidden');
-            hideMessage();
-        }
-
-        // Event Listeners
-        startBtn.addEventListener('click', startTracking);
-        stopBtn.addEventListener('click', stopTracking);
-        saveBtn.addEventListener('click', saveTraining);
-        resetBtn.addEventListener('click', resetTracking);
-        backBtn.addEventListener('click', () => switchView('archive'));
-        deleteBtn.addEventListener('click', () => {
-            if (selectedTrainingId) {
-                deleteTraining(selectedTrainingId);
-            }
-        });
-
-        // Initiale Nachricht
-        showMessage('Bereit zum Starten! GPS wird aktiviert sobald du auf "Training starten" drückst.', 'info');
-    </script>
+startBtn.addEventListener("click",startTracking);
+stopBtn.addEventListener("click",stopTracking);
+saveBtn.addEventListener("click",saveTraining);
+resetBtn.addEventListener("click",resetTracking);
+backBtn.addEventListener("click",()=>switchView("archive"));
+deleteBtn.addEventListener("click",()=>{if(selectedTrainingId)deleteTraining(selectedTrainingId)});
+showMessage("Bereit zum Starten! GPS wird aktiviert sobald du auf Training starten drückst.","info");
+</script>
 </body>
 </html>
